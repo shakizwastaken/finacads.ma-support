@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "../common/Input";
+import Input from "../common/inputs/Input";
 import { api } from "@/utils/api";
 import AuthLayout from "./Layout";
 import Router from "next/router";

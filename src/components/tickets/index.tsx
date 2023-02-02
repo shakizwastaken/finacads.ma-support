@@ -1,10 +1,14 @@
+import { TicketContextProvider } from "@/context/tickets";
+import TicketChat from "./chat";
 import TicketsList from "./list";
 
 export default function Tickets() {
   return (
-    <div className="flex h-full w-full">
-      <TicketsList />
-      Ticket
-    </div>
+    <TicketContextProvider>
+      <div className="flex h-full w-full">
+        <TicketsList />
+        <TicketChat />
+      </div>
+    </TicketContextProvider>
   );
 }

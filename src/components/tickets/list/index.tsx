@@ -2,17 +2,22 @@ import { api } from "@/utils/api";
 import TicketsListItem, { TicketsListItemProps } from "./Item";
 
 import { FaPlus } from "react-icons/fa";
-import { useModal } from "@/context/modal";
 import { useCreateTicketModal } from "../modals/Create";
+import { useTicketContext } from "@/context/tickets";
 
 export default function TicketsList() {
   const { data: tickets } = api.ticket.getAll.useQuery();
 
   const openCreateTicketModal = useCreateTicketModal();
 
+  const { deselectTicket } = useTicketContext();
+
   return (
     <div className="flex min-w-[350px] flex-col items-center border-r-[1px] shadow-md">
-      <div className="flex h-[50px] w-full items-center justify-between border-b-[1px] p-4">
+      <div
+        className="flex h-[50px] w-full items-center justify-between border-b-[1px] p-4"
+        onClick={deselectTicket}
+      >
         <h1 className="select-none font-bold text-primary">Your tickets</h1>
         <FaPlus
           size="35px"

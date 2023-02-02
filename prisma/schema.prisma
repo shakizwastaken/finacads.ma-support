@@ -49,8 +49,12 @@ model User {
 }
 
 model Customer {
-    id       String @id @unique @default(cuid())
-    name     String
+    id String @id @unique @default(cuid())
+
+    name        String
+    description String?
+    picture     String?
+
     accounts User[]
 
     createdAt DateTime @default(now())

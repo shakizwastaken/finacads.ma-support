@@ -1,12 +1,8 @@
 import { HTMLInputTypeAttribute } from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { InputDefaultProps } from "./types";
 
-export interface InputProps {
-  label?: string;
-  placeholder?: string;
+export interface InputProps extends InputDefaultProps {
   type?: HTMLInputTypeAttribute;
-  register: UseFormRegisterReturn;
-  className?: string;
 }
 
 export default function Input({
@@ -15,6 +11,7 @@ export default function Input({
   placeholder,
   register,
   className,
+  disabled,
 }: InputProps) {
   return (
     <div className={`form-control ${className}`}>
@@ -24,6 +21,7 @@ export default function Input({
         className="form-control-input"
         type={type}
         {...register}
+        disabled={disabled}
       />
     </div>
   );

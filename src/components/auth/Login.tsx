@@ -1,13 +1,18 @@
+import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginData } from "@/context/auth/types";
+import Input from "../common/inputs/Input";
+import AuthLayout from "./Layout";
 import { api } from "@/utils/api";
 import Router from "next/router";
-import { useForm, SubmitHandler } from "react-hook-form";
-import Input from "../common/Input";
-import AuthLayout from "./Layout";
 
 export default function Login() {
   const { register, handleSubmit, reset } = useForm<LoginData>();
-  const { mutate: login, error: err } = api.auth.requestOtp.useMutation({
+
+  const {
+    mutate: login,
+    error: err,
+    isLoading,
+  } = api.auth.requestOtp.useMutation({
     onSuccess() {
       reset();
       Router.push("/auth/verify-otp");
@@ -15,6 +20,7 @@ export default function Login() {
   });
 
   const onSubmit: SubmitHandler<LoginData> = (data) => {
+    if (isLoading) return;
     login(data);
   };
 
@@ -29,6 +35,7 @@ export default function Login() {
       <button
         className="btn btn-primary w-full"
         onClick={handleSubmit(onSubmit)}
+        disabled={isLoading}
       >
         Login
       </button>
