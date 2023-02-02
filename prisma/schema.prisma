@@ -1,0 +1,119 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgres"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    ADMIN
+    STAFF
+    CUSTOMER
+}
+
+enum Label {
+    URGENT
+    ORDER
+    ISSUE
+    INFO
+}
+
+model User {
+    id String @id @unique @default(cuid())
+
+    firstName String
+    lastName  String
+
+    email          String  @unique
+    emailConfirmed Boolean @default(false)
+
+    contactEmail  String
+    displayNumber String?
+    picture       String?
+    position      String
+
+    roles Role[]
+
+    customer   Customer? @relation(fields: [customerId], references: [id])
+    customerId String?
+
+    messages Message[]
+    otpCodes OtpRecord[]
+
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @default(now()) @updatedAt
+    openedTickets Ticket[]
+    staffTickets  TicketStaff[]
+}
+
+model Customer {
+    id       String @id @unique @default(cuid())
+    name     String
+    accounts User[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+    Ticket    Ticket[]
+}
+
+model Message {
+    id String @id @unique @default(cuid())
+
+    ticket   Ticket @relation(fields: [ticketId], references: [id])
+    ticketId String
+
+    sender   User?   @relation(fields: [senderId], references: [id])
+    senderId String?
+
+    isSystemMessage Boolean
+
+    content String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Ticket {
+    id String @id @unique @default(cuid())
+
+    title       String
+    description String?
+    labels      Label[]
+
+    messages Message[]
+
+    createdBy User     @relation(fields: [userId], references: [id])
+    customer  Customer @relation(fields: [customerId], references: [id])
+
+    createdAt  DateTime      @default(now())
+    updatedAt  DateTime      @default(now()) @updatedAt
+    userId     String
+    customerId String
+    staff      TicketStaff[]
+}
+
+model TicketStaff {
+    id String @id @unique @default(cuid())
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    ticket Ticket @relation(fields: [ticketId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+    ticketId  String
+}
+
+model OtpRecord {
+    id   String @id @unique @default(cuid())
+    code String
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+}
