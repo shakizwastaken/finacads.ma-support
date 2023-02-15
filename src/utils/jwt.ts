@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { serialize } from "cookie";
-import { env } from "../env/server.mjs";
-import { NextApiResponse } from "next";
 import { User } from "@prisma/client";
+import { env } from "../env/server.mjs";
+import { setCookie } from "cookies-next";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export interface JWTPayloadType {
   aud: string;
@@ -33,12 +33,26 @@ export class JWTPayload {
   }
 }
 
-export const sendToken = async (user: User, res: NextApiResponse) => {
+export const sendToken = async ({
+  user,
+  req,
+  res,
+}: {
+  user: User;
+  req: NextApiRequest;
+  res: NextApiResponse;
+}) => {
+  console.log("sending token");
+
   const token = new JWTPayload(user).sign();
   if (!token) throw new Error("Failed to sign token");
 
+  console.log("token", token);
+
   //set cookies in header as httpOnly
-  res.setHeader("Set-Cookie", serialize("token", token, { httpOnly: true }));
+  let setcookie = setCookie("token", token, { httpOnly: true, req, res });
+
+  console.log(setcookie, "setCookie return");
 
   //return token string
   return token;

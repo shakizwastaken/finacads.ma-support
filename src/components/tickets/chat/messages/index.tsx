@@ -18,7 +18,7 @@ export default function TicketChatMessages() {
     return (
       <div className="h-[calc(100vh-150px)] w-full overflow-y-auto px-4 py-4">
         {messages.map((message) => (
-          <TicketChatMessage {...message} />
+          <TicketChatMessage key={message.id} {...message} />
         ))}
         <div ref={messagesRef} />
       </div>

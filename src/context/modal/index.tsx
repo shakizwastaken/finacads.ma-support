@@ -44,6 +44,13 @@ const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     document.addEventListener("click", handleClickOutside, true);
 
+    document.addEventListener("keydown", (e) => {
+      console.log("closing...", e.key === "Escape");
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    });
+
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };

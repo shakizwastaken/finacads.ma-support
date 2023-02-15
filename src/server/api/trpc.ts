@@ -55,9 +55,8 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
  * transformer
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
-import { parse } from "cookie";
 import { JWTPayload } from "@/utils/jwt";
+import superjson from "superjson";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

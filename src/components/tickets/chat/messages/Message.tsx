@@ -1,6 +1,5 @@
 import { useAuth } from "@/context/auth/hooks";
 import { Message, User } from "@prisma/client";
-import { useState } from "react";
 
 export interface TicketChageMessageProps extends Message {
   isSender: boolean;
@@ -23,16 +22,14 @@ export default function TicketChatMessage({
       style={{ placeItems: `${isSender ? "flex-end" : "flex-start"}` }}
     >
       <div
-        className={`w-[250px] select-none rounded-md bg-gray-300 py-2 px-4 font-normal ${
+        className={`w-[250px] rounded-md bg-gray-300 py-2 px-4 font-normal ${
           isSender ? "" : ""
         }`}
       >
         <p>{content}</p>
       </div>
 
-      <h1 className="m-0 select-none text-xs">
-        sent at {createdAt.toLocaleDateString()}
-      </h1>
+      <h1 className="m-0 text-xs">sent at {createdAt.toLocaleDateString()}</h1>
     </div>
   );
 }

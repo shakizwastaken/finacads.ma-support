@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import useCookies from "react-cookie/cjs/useCookies";
 import Router from "next/router";
 import { AuthContext } from ".";
 import { AuthState } from "./types";
 import { api } from "@/utils/api";
 import { User } from "@prisma/client";
+import { useCookies } from "react-cookie";
 
 export type AuthHandler = (params: {
   isAuthenticated: boolean;
@@ -67,9 +67,8 @@ export const useAuthProvider = (
 
 export const useAuth = () => useContext(AuthContext);
 
-export const useAuthCookie = () => {
-  const [{ token }, setCookie, removeCookie] = useCookies(["token"]);
-  const setToken = (value: string) => setCookie("token", value);
-  const clearToken = () => removeCookie("token");
-  return [token, setToken, clearToken];
-};
+// export const useAuthCookie = () => {
+//   const [] = useCookies(["token"]);
+//   const clearToken = () => remove("token");
+//   return [token, clearToken];
+// };

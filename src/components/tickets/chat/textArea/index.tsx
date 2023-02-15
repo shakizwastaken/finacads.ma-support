@@ -1,15 +1,17 @@
 import { useTicketContext } from "@/context/tickets";
 import { api } from "@/utils/api";
+import { EventHandler, KeyboardEvent, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
-import { useEffect } from "react";
 
 export default function TicketChatTextArea() {
   const utils = api.useContext();
 
   const { activeTicket } = useTicketContext();
 
-  const { register, handleSubmit, reset } = useForm<{ content: string }>();
+  const { register, handleSubmit, reset, getValues } = useForm<{
+    content: string;
+  }>();
   const { mutate: sendMessage, isLoading } =
     api.ticket.sendUserMessage.useMutation({
       onSuccess() {
@@ -20,13 +22,18 @@ export default function TicketChatTextArea() {
 
   const onSubmit: SubmitHandler<{ content: string }> = ({ content }) => {
     if (isLoading) return;
+
+    console.log(content, "hmmm");
+
     sendMessage({ ticketId: activeTicket || "", content });
   };
 
   useEffect(() => {
-    return () => {
-      reset({ content: "" });
-    };
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && getValues().content) {
+        onSubmit(getValues());
+      }
+    });
   }, []);
 
   return (

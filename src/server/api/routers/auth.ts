@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { generateOtp, isExpiredOtp } from "@/utils/auth";
-import { JWTPayload, sendToken } from "@/utils/jwt";
+import { sendToken } from "@/utils/jwt";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -37,7 +37,7 @@ const authRouter = createTRPCRouter({
     }),
   verifyOtp: publicProcedure
     .input(z.object({ code: z.string() }))
-    .mutation(async ({ ctx: { prisma, res }, input: { code } }) => {
+    .mutation(async ({ ctx: { prisma, req, res }, input: { code } }) => {
       let otpRecord = await prisma.otpRecord.findFirst({ where: { code } });
 
       if (!otpRecord)
@@ -63,15 +63,13 @@ const authRouter = createTRPCRouter({
         where: { id: otpRecord.userId },
       });
 
-      console.log("got here");
-
       if (!user)
         throw new TRPCError({
           message: "Something went wrong",
           code: "INTERNAL_SERVER_ERROR",
         });
 
-      let token = sendToken(user, res);
+      let token = sendToken({ user, req, res });
 
       return { user, token };
     }),
