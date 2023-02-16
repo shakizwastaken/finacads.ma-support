@@ -1,18 +1,23 @@
 import { useTicketContext } from "@/context/tickets";
 import { api } from "@/utils/api";
 import TicketChatMessage from "./Message";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function TicketChatMessages() {
-  const { activeTicket } = useTicketContext();
-  let { data: messages } = api.ticket.getConversation.useQuery({
-    ticketId: activeTicket || "",
-  });
+  const { activeTicket, messagesEnd, scrollToBottom } = useTicketContext();
+  let { data: messages } = api.ticket.getConversation.useQuery(
+    {
+      ticketId: activeTicket || "",
+    },
+    {
+      refetchIntervalInBackground: true,
+      refetchInterval: 3000,
+    }
+  );
 
-  const messagesRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    messagesRef?.current?.scrollTo({ behavior: "smooth" });
-  }, []);
+    scrollToBottom();
+  }, [activeTicket, messagesEnd, messagesEnd?.current, messages]);
 
   if (messages && messages.length)
     return (
@@ -20,7 +25,8 @@ export default function TicketChatMessages() {
         {messages.map((message) => (
           <TicketChatMessage key={message.id} {...message} />
         ))}
-        <div ref={messagesRef} />
+
+        <div ref={messagesEnd}></div>
       </div>
     );
   else

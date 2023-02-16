@@ -14,7 +14,9 @@ export default function TicketChat() {
       <TicketChatTextArea />
     </div>
   ) : (
-    <div className="flex flex-1 flex-col items-center justify-center">
+    <div className="flex flex-1 flex-col items-center justify-center gap-2">
+      <h1>Select a ticket</h1>
+      <h1 className="text-gray-400">or</h1>
       <button className="btn btn-primary" onClick={openCreateTicketModal}>
         Create a ticket
       </button>

@@ -6,7 +6,9 @@ import { useCreateTicketModal } from "../modals/Create";
 import { useTicketContext } from "@/context/tickets";
 
 export default function TicketsList() {
-  const { data: tickets } = api.ticket.getAll.useQuery();
+  const { data: tickets } = api.ticket.getAll.useQuery(undefined, {
+    refetchInterval: 3000,
+  });
 
   const openCreateTicketModal = useCreateTicketModal();
 

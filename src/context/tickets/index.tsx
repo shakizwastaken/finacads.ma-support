@@ -3,7 +3,7 @@ import {
   PropsWithChildren,
   useState,
   useContext,
-  useEffect,
+  useRef,
 } from "react";
 import { TicketContextState, TicketState } from "./types";
 
@@ -15,6 +15,8 @@ export const ticketContext = createContext<TicketContextState>({
   ...initialState,
   setActiveTicket: () => null,
   deselectTicket: () => null,
+  messagesEnd: null,
+  scrollToBottom: () => null,
   // registerOnSwitchEvent: () => null,
 });
 
@@ -25,6 +27,14 @@ export const TicketContextProvider = ({ children }: PropsWithChildren) => {
   const [onSwitchEvents, setOnSwitchEvents] = useState<
     ((activeTicket?: string | null) => any)[]
   >([]);
+
+  const messagesEnd = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = (
+    arg?: boolean | ScrollIntoViewOptions | undefined
+  ) => {
+    messagesEnd.current?.scrollIntoView(arg);
+  };
 
   // const registerOnSwitchEvent = (
   //   handler: (activeTicket?: string | null) => any
@@ -44,7 +54,8 @@ export const TicketContextProvider = ({ children }: PropsWithChildren) => {
         activeTicket,
         setActiveTicket,
         deselectTicket,
-        // registerOnSwitchEvent,
+        messagesEnd,
+        scrollToBottom,
       }}
     >
       {children}

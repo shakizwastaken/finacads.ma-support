@@ -1,4 +1,4 @@
-import { TicketContextProvider } from "@/context/tickets";
+import { TicketContextProvider, useTicketContext } from "@/context/tickets";
 import TicketChat from "./chat";
 import TicketsList from "./list";
 

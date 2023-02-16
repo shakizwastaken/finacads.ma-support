@@ -22,19 +22,22 @@ export default function TicketChatTextArea() {
 
   const onSubmit: SubmitHandler<{ content: string }> = ({ content }) => {
     if (isLoading) return;
+    sendMessage({ ticketId: activeTicket as string, content });
+  };
 
-    console.log(content, "hmmm");
-
-    sendMessage({ ticketId: activeTicket || "", content });
+  const handlePressEnter = (e: any) => {
+    if (e.key === "Enter" && getValues().content) {
+      onSubmit(getValues());
+    }
   };
 
   useEffect(() => {
-    document.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" && getValues().content) {
-        onSubmit(getValues());
-      }
-    });
-  }, []);
+    document.addEventListener("keyup", handlePressEnter);
+
+    return () => {
+      document.removeEventListener("keyup", handlePressEnter);
+    };
+  }, [activeTicket]);
 
   return (
     <div className="flex h-[75px] w-full gap-4 border-t-2 px-6 py-4">
