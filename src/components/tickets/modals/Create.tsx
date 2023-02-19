@@ -7,6 +7,7 @@ import { useModal } from "@/context/modal";
 import { Label, Ticket } from "@prisma/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { api } from "@/utils/api";
+import SelectCustomer from "@/components/common/inputs/misc/SelectCustomer";
 
 export interface LabelOption {
   label: string;
@@ -87,12 +88,9 @@ export default function CreateTicketModal() {
           placeholder="why have you created this ticket"
           className="flex-[45%]"
         />
-        <InputSelect
-          loading={customerOptionsLoading}
-          options={customerOptions || [{ label: "Something cool", value: "" }]}
+
+        <SelectCustomer
           register={register("customerId")}
-          label="Cutomer"
-          placeholder="select a customer"
           className="flex-[45%]"
         />
 

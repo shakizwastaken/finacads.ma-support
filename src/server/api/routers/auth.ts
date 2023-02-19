@@ -74,7 +74,7 @@ const authRouter = createTRPCRouter({
       return { user, token };
     }),
 
-  getUser: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+  getUser: protectedProcedure.query(async ({ ctx: { user } }) => {
     return { user };
   }),
 });

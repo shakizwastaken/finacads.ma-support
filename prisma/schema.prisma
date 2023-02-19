@@ -24,15 +24,15 @@ model User {
     id String @id @unique @default(cuid())
 
     firstName String
-    lastName  String
+    lastName  String?
 
     email          String  @unique
     emailConfirmed Boolean @default(false)
 
-    contactEmail  String
+    contactEmail  String?
     displayNumber String?
     picture       String?
-    position      String
+    position      String?
 
     roles Role[]
 
@@ -42,10 +42,16 @@ model User {
     messages Message[]
     otpCodes OtpRecord[]
 
-    createdAt     DateTime      @default(now())
-    updatedAt     DateTime      @default(now()) @updatedAt
-    openedTickets Ticket[]
-    staffTickets  TicketStaff[]
+    disabled Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+
+    openedTickets   Ticket[] @relation("openedTickets")
+    closedTickets   Ticket[] @relation("closedTickets")
+    archivedTickets Ticket[] @relation("archivedTickets")
+
+    staffTickets TicketStaff[]
 }
 
 model Customer {
@@ -56,10 +62,10 @@ model Customer {
     picture     String?
 
     accounts User[]
+    tickets  Ticket[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now()) @updatedAt
-    Ticket    Ticket[]
 }
 
 model Message {
@@ -88,14 +94,23 @@ model Ticket {
 
     messages Message[]
 
-    createdBy User     @relation(fields: [userId], references: [id])
-    customer  Customer @relation(fields: [customerId], references: [id])
-
-    createdAt  DateTime      @default(now())
-    updatedAt  DateTime      @default(now()) @updatedAt
+    createdBy  User     @relation(fields: [userId], references: [id], name: "openedTickets")
+    customer   Customer @relation(fields: [customerId], references: [id])
     userId     String
     customerId String
-    staff      TicketStaff[]
+
+    isClosed   Boolean @default(false)
+    closedBy   User?   @relation(fields: [closedById], references: [id], name: "closedTickets")
+    closedById String?
+
+    isArchived   Boolean @default(false)
+    archivedBy   User?   @relation(fields: [archivedById], references: [id], name: "archivedTickets")
+    archivedById String?
+
+    staff TicketStaff[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
 }
 
 model TicketStaff {

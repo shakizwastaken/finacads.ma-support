@@ -1,6 +1,6 @@
-import { TicketContextProvider, useTicketContext } from "@/context/tickets";
-import TicketChat from "./chat";
+import { TicketContextProvider } from "@/context/tickets";
 import TicketsList from "./list";
+import TicketChat from "./chat";
 
 export default function Tickets() {
   return (

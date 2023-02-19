@@ -4,7 +4,6 @@ import { AuthContext } from ".";
 import { AuthState } from "./types";
 import { api } from "@/utils/api";
 import { User } from "@prisma/client";
-import { useCookies } from "react-cookie";
 
 export type AuthHandler = (params: {
   isAuthenticated: boolean;
@@ -34,8 +33,8 @@ export const useAuthProvider = (
     user: {},
   });
 
-  const { mutate: getUser, isLoading: requestLoading } =
-    api.auth.getUser.useMutation({
+  const { refetch: getUser, isLoading: requestLoading } =
+    api.auth.getUser.useQuery(undefined, {
       onSuccess(value) {
         let user = value.user;
         if (user)
@@ -52,11 +51,9 @@ export const useAuthProvider = (
       onError(err) {
         setLoading(false);
       },
+      refetchInterval: 6000,
+      refetchIntervalInBackground: true,
     });
-
-  useEffect(() => {
-    getUser();
-  }, []);
 
   useEffect(() => {
     if (!loading) authHandler(authState);

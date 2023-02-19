@@ -15,6 +15,10 @@ export default function TicketChatMessages() {
     }
   );
 
+  let { data: ticketData } = api.ticket.getTicket.useQuery({
+    id: activeTicket || "",
+  });
+
   useEffect(() => {
     scrollToBottom();
   }, [activeTicket, messagesEnd, messagesEnd?.current, messages]);
@@ -27,6 +31,14 @@ export default function TicketChatMessages() {
         ))}
 
         <div ref={messagesEnd}></div>
+
+        {ticketData?.isClosed && (
+          <div className="flex w-full items-center justify-center text-center">
+            <h1 className="select-none rounded-full bg-slate-400 px-4 py-[1px] text-center text-sm">
+              This ticket is closed
+            </h1>
+          </div>
+        )}
       </div>
     );
   else
