@@ -18,6 +18,8 @@ export const serverSchema = z.object({
   SMTP_USER: z.string(),
   SMTP_PASSWORD: z.string(),
   SMTP_FROM: z.string(),
+
+  UPDATE_MAIL: z.string(),
 });
 
 /**
@@ -38,6 +40,8 @@ export const serverEnv = {
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   SMTP_FROM: process.env.SMTP_FROM,
+
+  UPDATE_MAIL: process.env.UPDATE_MAIL,
 };
 
 /**

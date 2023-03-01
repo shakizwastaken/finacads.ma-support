@@ -107,6 +107,8 @@ model Ticket {
     archivedBy   User?   @relation(fields: [archivedById], references: [id], name: "archivedTickets")
     archivedById String?
 
+    lastMessage DateTime @default(now())
+
     staff TicketStaff[]
 
     createdAt DateTime @default(now())

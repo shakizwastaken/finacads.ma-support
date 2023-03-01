@@ -70,16 +70,21 @@ export default function TicketsList() {
         </div>
       );
 
-    return tickets
-      .filter((ticket) => {
-        if (selectedFilter.value === "ALL") return true;
-        if (selectedFilter.value === "OPEN") return !ticket.isClosed;
-        if (selectedFilter.value === "CLOSED") return ticket.isClosed;
-        else return true;
-      })
-      .map((ticket, i) => (
-        <TicketsListItem key={i} {...(ticket as TicketsListItemProps)} />
-      ));
+    return (
+      tickets
+        .filter((ticket) => {
+          if (selectedFilter.value === "ALL") return true;
+          if (selectedFilter.value === "OPEN") return !ticket.isClosed;
+          if (selectedFilter.value === "CLOSED") return ticket.isClosed;
+          else return true;
+        })
+
+        //@ts-ignore
+        .sort((a, b) => b.lastMessage - a.lastMessage)
+        .map((ticket, i) => (
+          <TicketsListItem key={i} {...(ticket as TicketsListItemProps)} />
+        ))
+    );
   };
 
   return (

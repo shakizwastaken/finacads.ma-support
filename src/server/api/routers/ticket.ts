@@ -2,6 +2,8 @@ import { Customer, Ticket } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { env } from "@/env/server.mjs";
+import mailer from "@/lib/mailer";
 
 const ticketRouter = createTRPCRouter({
   getAll: protectedProcedure.query(
@@ -175,7 +177,7 @@ const ticketRouter = createTRPCRouter({
       async ({
         ctx: {
           prisma,
-          user: { id: userId },
+          user: { id: userId, firstName },
         },
         input: { ticketId, content },
       }) => {
@@ -206,6 +208,40 @@ const ticketRouter = createTRPCRouter({
             message: "Failed to create message",
             code: "INTERNAL_SERVER_ERROR",
           });
+
+        await prisma.ticket.update({
+          where: { id: ticket.id },
+          data: { lastMessage: new Date(Date.now()) },
+        });
+
+        //send update message to update mail
+        let update_status = await mailer.sendMail({
+          subject: "New message",
+          from: env.SMTP_FROM,
+          to: env.UPDATE_MAIL,
+          html: `
+            <html>
+              <h1>${firstName} just sent a new message</h1>
+              <h4>Message details:</h4>
+              <ul>
+                <li>content: ${content}</li>
+                <li>Sent at:${new Date(Date.now()).toString()}</li>
+              </ul> 
+
+              <br/>
+              
+              <h4>
+              Ticket details:
+              </h4>
+
+              <ul>
+              <li>Title:${ticket.title}</li>
+              <li>Description:${ticket.description}</li>
+              <li>Creation date:${ticket.createdAt.toString()}</li>
+              </ul>
+            </html>
+          `,
+        });
 
         return { message: "Message sent successfully!", messageData: message };
       }

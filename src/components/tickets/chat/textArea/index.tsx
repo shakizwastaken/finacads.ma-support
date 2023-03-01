@@ -21,13 +21,14 @@ export default function TicketChatTextArea() {
     api.ticket.sendUserMessage.useMutation({
       onSuccess() {
         utils.ticket.getConversation.invalidate();
-        reset({ content: "" });
+        utils.ticket.getAll.invalidate();
       },
     });
 
   const onSubmit: SubmitHandler<{ content: string }> = ({ content }) => {
     if (isLoading) return;
     sendMessage({ ticketId: activeTicket as string, content });
+    reset({ content: "" });
   };
 
   const handlePressEnter = (e: any) => {
@@ -53,7 +54,12 @@ export default function TicketChatTextArea() {
             ? "Cannot talk in a closed ticket."
             : "write a message..."
         }
-        {...register("content", { required: true })}
+        {...register("content", {
+          required: true,
+          onChange() {
+            if (isLoading) return;
+          },
+        })}
         disabled={ticketData?.isClosed}
       />
       <div className="flex flex-[15%] items-center justify-center">
