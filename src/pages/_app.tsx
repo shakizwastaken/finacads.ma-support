@@ -6,8 +6,18 @@ import { api } from "../utils/api";
 import { AuthContextProvider } from "../context/auth";
 import Head from "next/head";
 import { ModalProvider } from "@/context/modal";
+import { useEffect } from "react";
+import Router from "next/router";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const { data: didOnboard } = api.auth.checkOnboarding.useQuery();
+
+  useEffect(() => {
+    if (!didOnboard) {
+      Router.push("/onboard");
+    }
+  }, [didOnboard]);
+
   return (
     <AuthContextProvider>
       <ModalProvider>

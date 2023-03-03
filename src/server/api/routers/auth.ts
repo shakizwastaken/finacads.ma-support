@@ -1,10 +1,17 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { generateOtp, isExpiredOtp } from "@/utils/auth";
 import { sendToken } from "@/utils/jwt";
+import { Role } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 const authRouter = createTRPCRouter({
+  checkOnboarding: publicProcedure.query(async () => {
+    let admin = await prisma?.user.findFirst({
+      where: { roles: { has: Role.ADMIN } },
+    });
+    return !!admin;
+  }),
   requestOtp: publicProcedure
     .input(
       z.object({
