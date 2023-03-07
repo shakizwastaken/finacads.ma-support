@@ -42,17 +42,11 @@ export const sendToken = async ({
   req: NextApiRequest;
   res: NextApiResponse;
 }) => {
-  console.log("sending token");
-
   const token = new JWTPayload(user).sign();
   if (!token) throw new Error("Failed to sign token");
 
-  console.log("token", token);
-
   //set cookies in header as httpOnly
-  let setcookie = setCookie("token", token, { httpOnly: true, req, res });
-
-  console.log(setcookie, "setCookie return");
+  setCookie("token", token, { httpOnly: true, req, res });
 
   //return token string
   return token;
